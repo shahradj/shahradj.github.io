@@ -15,5 +15,5 @@ module.exports = {
   },
   lintOnSave: false,
   productionSourceMap: false,
-  publicPath: '/multitrack-player/'
+  publicPath: '/'
 };
