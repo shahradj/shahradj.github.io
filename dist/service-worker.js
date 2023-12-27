@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.859915c90a21fa8853028b007ccf505c.js"
+  "/precache-manifest.0ef786a2943e383ecf07c667fe762e38.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "multitrack-player"});
