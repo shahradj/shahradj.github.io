@@ -1,6 +1,6 @@
 <template>
   <div>
-    <select v-model="selectedItem" aria-placeholder="Select Song" style="background-color: #f00;">
+    <select v-model="selectedItem" style="border-color: rgb(0, 0, 0)">
       <option v-for="item in items" :key="item.id" :value="item">
         {{ item.name }}
       </option>
@@ -25,38 +25,7 @@ import Track from './Track';
 import Song from './Song';
 import Dropdown from 'vue-simple-search-dropdown';
 
-var files2;
 
-fetch('https://shahradj.pythonanywhere.com/static/',{
-      mode: 'cors',
-      headers: {
-          'Access-Control-Allow-Origin':'*'
-      },
-      contentType: 'arraybuffer',
-      redirect: 'follow'
-  }).then(function(resp) {
-      return resp.json()
-  }).then((data) => {
-    files2 = data
-    console.log(data)
-  })
-var files = [
-  {'id':1,
-  'name':'song_name_2',
-  property: 'Song Name',
-  'files': [
-    'testa.mp3',
-    'testb.mp3',
-  ]
-}, 
-{'id':2,
-'name':'song_name_1',
-property: 'Song NameX',
-'files': [
-    'testc.mp3',
-    'testd.mp3',
-]}
-]
 export default {
   components: {
     Dropdown,
@@ -65,10 +34,8 @@ export default {
   },
   data() {
     return {
-      files: [],
-      options: files,
-      selectedItem: null,
-      items: files
+      selectedItem: 'Select Song',
+      items: []
     };
   },
   watch: {
@@ -79,7 +46,32 @@ export default {
       // Add more conditions as needed for different property values
     },
   },
+  beforeMount() {
+    this.getTracks()
+  },
   methods: {
+    getTracks(){
+      fetch('https://shahradj.pythonanywhere.com/static/',{
+            mode: 'cors',
+            headers: {
+                'Access-Control-Allow-Origin':'*'
+            },
+            contentType: 'arraybuffer',
+            redirect: 'follow'
+        }).then(function(resp) {
+            return resp.json()
+        }).then((data) => {
+          var i = 1
+          for (const key in data){
+            this.items.push({
+              id: 1,
+              name: key,
+              files: data[key]
+            })
+            i++
+          }
+        })
+    },
     addTracks(files) {
       if (!files.length) {
         return;
@@ -94,8 +86,7 @@ export default {
     },
     callApi1(event) {
         event.files.map( (file) => {
-          fetch('https://shahradj.pythonanywhere.com/static/song_name_1/'+file,{
-          // fetch('http://localhost:5050/static/'+file,{
+          fetch('https://shahradj.pythonanywhere.com/static/'+event.name+'/'+file,{
               mode: 'cors',
               headers: {
                   'Access-Control-Allow-Origin':'*'
@@ -103,17 +94,16 @@ export default {
               contentType: 'arraybuffer',
               redirect: 'follow'
           }).then(function(resp) {
-              // contentType = resp.headers.get('content-type');
               return resp.blob();
           }).then( blob => {
               var reader = new FileReader();
-              // reader.readAsDataURL(blob);
               reader.readAsArrayBuffer(blob);
               reader.addEventListener('load', () => {
               this.$store.dispatch('addTrack', {
                 file,
                 arrayBuffer: reader.result
               });
+              console.log(this.$store.tracks)
             });
           })
         })

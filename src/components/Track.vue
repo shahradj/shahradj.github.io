@@ -14,9 +14,6 @@
             <VBtn :outlined="!solo" color="primary" @click="toggleSolo"
               >Solo</VBtn
             >
-            <VBtn icon @click="remove">
-              <VIcon>mdi-delete</VIcon>
-            </VBtn>
           </VRow>
           <VSlider
             hide-details
